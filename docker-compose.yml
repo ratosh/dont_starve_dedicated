@@ -1,0 +1,97 @@
+version: "3.9"
+services:
+  overworld:
+    image: yeetzone/dontstarvetogether
+    container_name: overworld
+    hostname: overworld
+    restart: always
+    depends_on:
+      - data
+    env_file:
+      - overworld.env
+      - local.env
+    environment:
+      MODS_CONFIGURATION: |
+        return {
+          ["workshop-1233501056"]={ configuration_options={ layout=3, position=2 }, enabled=true },
+          ["workshop-1378549454"]={
+            configuration_options={
+              ["MemSpikeFix:"]=false,
+              MemSpikeFixmaster_override=true,
+              ["MemSpikeFixworkshop-1233501056"]="default",
+              ["MemSpikeFixworkshop-1608191708"]="default",
+              ["MemSpikeFixworkshop-345692228"]="default",
+              ["MemSpikeFixworkshop-351325790"]="default",
+              ["MemSpikeFixworkshop-352373173"]="default",
+              ["MemSpikeFixworkshop-365119238"]="default",
+              ["MemSpikeFixworkshop-376333686"]="default",
+              ["MemSpikeFixworkshop-378160973"]="default",
+              ["MemSpikeFixworkshop-758532836"]="default",
+              craftinghighlight=false
+            },
+            enabled=true
+          },
+          ["workshop-378160973"]={
+            configuration_options={
+              ENABLEPINGS=true,
+              FIREOPTIONS=2,
+              OVERRIDEMODE=false,
+              SHAREMINIMAPPROGRESS=true,
+              SHOWFIREICONS=true,
+              SHOWPLAYERICONS=true,
+              SHOWPLAYERSOPTIONS=2
+            },
+            enabled=true
+          },
+          ["workshop-758532836"]={
+            configuration_options={
+              AUTOPAUSECONSOLE=false,
+              AUTOPAUSEMAP=false,
+              AUTOPAUSESINGLEPLAYER=true,
+              ENABLECLIENTPAUSING=false,
+              ENABLEHOTKEY=false,
+              KEYBOARDTOGGLEKEY="P"
+            },
+            enabled=true
+          }
+        }
+    ports:
+      - "10999:10999/udp"
+    volumes:
+      - type: volume
+        source: data
+        target: /data
+  underworld:
+    image: yeetzone/dontstarvetogether
+    container_name: underworld
+    hostname: underworld
+    restart: always
+    depends_on:
+      - data
+    env_file:
+      - underworld.env
+      - local.env
+    ports:
+      - "11000:11000/udp"
+    volumes:
+      - type: volume
+        source: data
+        target: /data
+  health:
+    image: willfarrell/autoheal
+    container_name: health
+    hostname: health
+    restart: always
+    env_file:
+      - health.env
+      - local.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  data:
+    image: yeetzone/dontstarvetogether-data
+    volumes:
+      - type: volume
+        source: data
+        target: /data
+volumes:
+  data:
